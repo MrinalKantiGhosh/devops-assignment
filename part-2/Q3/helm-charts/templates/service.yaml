@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+  {{- include "selector" . | nindent 4 }}  
+  ports:
+    - port: {{ .Values.ports.containerPort }}
+      targetPort: {{ .Values.ports.containerPort }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.service.port }}
+      {{- end }}

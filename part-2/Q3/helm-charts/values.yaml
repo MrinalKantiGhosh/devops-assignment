@@ -1,0 +1,15 @@
+replicas: 1
+image:
+  imageName: nginx
+  tag: 1.21.3
+  pullPolicy: "Always"
+
+ports:
+  enabled: true
+  containerPort: 80
+
+resources:
+  enabled: false
+
+service:
+  type: "ClusterIP"

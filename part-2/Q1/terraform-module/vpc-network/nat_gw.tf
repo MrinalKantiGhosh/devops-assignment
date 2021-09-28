@@ -1,28 +1,39 @@
-# resource "aws_eip" "nat" {
-#   count = var.enable_nat_gateway && false == var.reuse_nat_ips ? local.nat_gateway_count : 0
+resource "aws_eip" "nat_eip" {
+  count = var.enable_nat_gateway ? 1 : 0
+  vpc = true
+}
 
-#   vpc = true
+resource "aws_nat_gateway" "nat_gw" {
+  count = var.enable_nat_gateway ? 1 : 0
 
-#   tags = merge(
-#     {
-#       "Name" = format(
-#         "%s-%s",
-#         var.name,
-#         element(var.azs, var.single_nat_gateway ? 0 : count.index),
-#       )
-#     },
-#     var.tags,
-#     var.nat_eip_tags,
-#   )
-# }
+  allocation_id = aws_eip.nat_eip[0].id
+  subnet_id     = aws_subnet.application_public_subnet[0].id
 
-# resource "aws_nat_gateway" "example" {
-#   allocation_id = aws_eip.example.id
-#   subnet_id     = aws_subnet.example.id
+  tags = {
+    Name = "Public_Nat_GW"
+  }
 
-#   tags = {
-#     Name = "Public_Nat_GW"
-#   }
+  depends_on = [aws_internet_gateway.internet_gw]
+}
 
-#   depends_on = [aws_internet_gateway.internet_gw]
-# }
+resource "aws_route_table" "private_rt" {
+  count = length(var.private_subnets) > 0 ? 1 : 0
+  
+  vpc_id = aws_vpc.application_vpc.id
+
+  tags = {
+    type = "private_route_table"
+  }
+}
+
+resource "aws_route" "private_subnet_nat_gateway" {
+  count = length(var.private_subnets) > 0 ? 1 : 0
+
+  route_table_id         = aws_route_table.private_rt[0].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.nat_gw[0].id
+
+  timeouts {
+    create = "5m"
+  }
+}

@@ -36,3 +36,43 @@
 Mandatory to choose one of the two parts and at least 2 out of 3 questions to be attempted.
 
 (Note: Please ask the candidate to write a small description of all the attempted questions, and the reason for the solution)
+
+
+### Setup Instruction
+
+#### Part 2 
+**Question 1**
+please go inside `part-2/Q1` folder
+1. Execute this in your terminal - 
+   ```bash
+   export TF_VAR_ACCESS_KEY="<Provide access key>" && export TF_VAR_SECRET_KEY="<Provide secret key>"
+   ```
+2. There is a run script which have 3 commands avaliable - 
+   1. `run.sh plan` - will show you teraform plan
+   2. `run.sh apply` - will apply teraform configurations and spin up aws resources
+   3. `run.sh plan` - will destroy aws resources
+   
+   * *Spin up of ec2 instance code is not there due to time crunch, will add later*
+   <br> **Architecture -**
+   ![Architecture](./part-2/Q1/images/architecture.png)
+
+
+**Question 2**
+   please go inside `part-2/Q2` folder
+   1. To get 3rd highest CPU consuming process -
+      ```bash
+      Nth_highest=3 SORT_BY=cpu ./process.sh process_details
+      ```
+   2. To get 3rd highest Memory consuming process -
+      ```bash
+      Nth_highest=3 SORT_BY=mem ./process.sh process_details
+      ```
+
+**Question 3**
+   please go inside `part-2/Q3` folder
+   1. Make sure you are logged into a k8s cluster. Then execute - 
+      ```bash
+       helm install nginx ./helm-charts --wait  -f ./helm-charts/values-env.yaml
+      ```
+
+      it will spin up a nginx deployment and get the nginx configuration from helm-charts/conf folder as a configmap and will mount it inside nginx pod

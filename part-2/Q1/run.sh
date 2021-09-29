@@ -1,7 +1,6 @@
 #!/bin/bash
 
 __plan() {
-  cd ./terraform || exit
   terraform init
   terraform plan
 }
@@ -12,7 +11,6 @@ __apply() {
 }
 
 __destroy() {
-  cd ./terraform || exit
   terraform destroy -auto-approve
 }
 
